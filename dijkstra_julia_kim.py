@@ -5,83 +5,90 @@ import cv2 as cv
 def input2tup(input):
     in_list = []
     for num in input.split(','):
-        in_list.append(int(num))
+        in_list.append(int(num)-1)
     output = tuple(in_list)
     return output
 
 # define actions as 8 separate functions
 def move_up(node_status, map):
     i = node_status[0]
-    if map[0] > 1:
-        row = blank_tile[0]-1
-        col = blank_tile[1]-1
-        node_status[row][col] = node_status[row - 1][col]
-        node_status[row - 1][col] = 0
+    j = 249-node_status[1]
+    if map[j+1, i] == 0:
+        m = i
+        n = j+1
+        new_node = (m,n)
         cost = 1
-    return node_status, cost
+    return new_node, cost
 
-# def move_up_right(node_status, blank_tile):
-#     if ????:
-#         row = blank_tile[0]-1
-#         col = blank_tile[1]-1
-#         node_status[row][col] = node_status[row - 1][col + 1]
-#         node_status[row - 1][col + 1] = 0
-#         cost = 1.4
-#     return node_status, cost
+def move_up_right(node_status, map):
+    i = node_status[0]
+    j = 249-node_status[1]
+    if map[j+1, i+1] == 0:
+        m = i+1
+        n = j+1
+        new_node = (m,n)
+        cost = 1.4
+    return new_node, cost
 
-# def move_right(node_status, blank_tile):
-#     if blank_tile[1] < 3:
-#         row = blank_tile[0]-1
-#         col = blank_tile[1]-1
-#         node_status[row][col] = node_status[row][col + 1]
-#         node_status[row][col + 1] = 0
-#         cost = 1
-#     return node_status, cost
+def move_right(node_status, map):
+    i = node_status[0]
+    j = 249-node_status[1]
+    if map[j, i+1] == 0:
+        m = i+1
+        n = j
+        new_node = (m,n)
+        cost = 1
+    return new_node, cost
 
-# def move_down_right(node_status, blank_tile):
-#     if ????:
-#         row = blank_tile[0]-1
-#         col = blank_tile[1]-1
-#         node_status[row][col] = node_status[row + 1][col + 1]
-#         node_status[row + 1][col + 1] = 0
-#         cost = 1.4
-#     return node_status, cost
+def move_down_right(node_status, map):
+    i = node_status[0]
+    j = 249-node_status[1]
+    if map[j-1, i+1] == 0:
+        m = i+1
+        n = j-1
+        new_node = (m,n)
+        cost = 1.4
+    return new_node, cost
 
-# def move_down(node_status, blank_tile):
-#     if blank_tile[0] < 3:
-#         row = blank_tile[0]-1
-#         col = blank_tile[1]-1
-#         node_status[row][col] = node_status[row + 1][col]
-#         node_status[row + 1][col] = 0
-#         cost = 1
-#     return node_status, cost
+def move_down(node_status, map):
+    i = node_status[0]
+    j = 249-node_status[1]
+    if map[j-1, i] == 0:
+        m = i
+        n = j-1
+        new_node = (m,n)
+        cost = 1
+    return new_node, cost
 
-# def move_down_left(node_status, blank_tile):
-#     if ????:
-#         row = blank_tile[0]-1
-#         col = blank_tile[1]-1
-#         node_status[row][col] = node_status[row + 1][col - 1]
-#         node_status[row + 1][col - 1] = 0
-#         cost = 1.4
-#     return node_status, cost
+def move_down_left(node_status, map):
+    i = node_status[0]
+    j = 249-node_status[1]
+    if map[j-1, i-1] == 0:
+        m = i-1
+        n = j-1
+        new_node = (m,n)
+        cost = 1.4
+    return new_node, cost
 
-# def move_left(node_status, blank_tile):
-#     if blank_tile[1] > 1:
-#         row = blank_tile[0]-1
-#         col = blank_tile[1]-1
-#         node_status[row][col] = node_status[row][col-1]
-#         node_status[row][col-1] = 0
-#         cost = 1
-#     return node_status, cost
+def move_left(node_status, map):
+    i = node_status[0]
+    j = 249-node_status[1]
+    if map[j, i-1] == 0:
+        m = i-1
+        n = j
+        new_node = (m,n)
+        cost = 1
+    return new_node, cost
 
-# def move_down_right(node_status, blank_tile):
-#     if ????:
-#         row = blank_tile[0]-1
-#         col = blank_tile[1]-1
-#         node_status[row][col] = node_status[row - 1][col - 1]
-#         node_status[row - 1][col - 1] = 0
-#         cost = 1.4
-#     return node_status, cost
+def move_up_left(node_status, map):
+    i = node_status[0]
+    j = 249-node_status[1]
+    if map[j+1, i-1] == 0:
+        m = i-1
+        n = j+1
+        new_node = (m,n)
+        cost = 1.4
+    return new_node, cost
 
 start_input = input("Start State:")
 goal_input = input("Goal State:")

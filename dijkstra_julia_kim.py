@@ -16,83 +16,124 @@ def input2node(input):
 def move_up(node_status, map):
     i = node_status[0]
     j = 249-node_status[1]
-    if map[j+1, i] == 0:
+    if j+1>249:
+        return node_status, 0
+    elif map[j+1, i] == 0:
         m = i
         n = j+1
         new_node = (m,n)
         cost = 1
-    return new_node, cost
+        return new_node, cost
+    else:
+        return node_status, 0
 
 def move_up_right(node_status, map):
     i = node_status[0]
     j = 249-node_status[1]
-    if map[j+1, i+1] == 0:
+    if j+1>249:
+        return node_status, 0
+    elif i+1>599:
+        return node_status, 0
+    elif map[j+1, i+1] == 0:
         m = i+1
         n = j+1
         new_node = (m,n)
         cost = 1.4
-    return new_node, cost
+        return new_node, cost
+    else:
+        return node_status, 0
 
 def move_right(node_status, map):
     i = node_status[0]
     j = 249-node_status[1]
-    if map[j, i+1] == 0:
+    if i+1>599:
+        return node_status, 0
+    elif map[j, i+1] == 0:
         m = i+1
         n = j
         new_node = (m,n)
         cost = 1
-    return new_node, cost
+        return new_node, cost
+    else:
+        return node_status, 0
 
 def move_down_right(node_status, map):
     i = node_status[0]
     j = 249-node_status[1]
-    if map[j-1, i+1] == 0:
+    if j-1<0:
+        return node_status, 0
+    elif i+1>599:
+        return node_status, 0
+    elif map[j-1, i+1] == 0:
         m = i+1
         n = j-1
         new_node = (m,n)
         cost = 1.4
-    return new_node, cost
+        return new_node, cost
+    else:
+        return node_status, 0
 
 def move_down(node_status, map):
     i = node_status[0]
     j = 249-node_status[1]
-    if map[j-1, i] == 0:
+    if j-1<0:
+        return node_status, 0
+    elif map[j-1, i] == 0:
         m = i
         n = j-1
         new_node = (m,n)
         cost = 1
-    return new_node, cost
+        return new_node, cost
+    else:
+        return node_status, 0
 
 def move_down_left(node_status, map):
     i = node_status[0]
     j = 249-node_status[1]
-    if map[j-1, i-1] == 0:
+    if j-1<0:
+        return node_status, 0
+    elif i-1<0:
+        return node_status, 0
+    elif map[j-1, i-1] == 0:
         m = i-1
         n = j-1
         new_node = (m,n)
         cost = 1.4
-    return new_node, cost
+        return new_node, cost
+    else:
+        return node_status, 0
 
 def move_left(node_status, map):
     i = node_status[0]
     j = 249-node_status[1]
-    if map[j, i-1] == 0:
+    if i-1<0:
+        return node_status, 0
+    elif map[j, i-1] == 0:
         m = i-1
         n = j
         new_node = (m,n)
         cost = 1
-    return new_node, cost
+        return new_node, cost
+    else:
+        return node_status, 0
 
 def move_up_left(node_status, map):
     i = node_status[0]
     j = 249-node_status[1]
-    if map[j+1, i-1] == 0:
+    if j+1>249:
+        return node_status, 0
+    elif i-1<0:
+        return node_status, 0
+    elif map[j+1, i-1] == 0:
         m = i-1
         n = j+1
         new_node = (m,n)
         cost = 1.4
-    return new_node, cost
+        return new_node, cost
+    else:
+        return node_status, 0
 
+# define a function to compare if two nodes are the same, used to check if goal reached
 def node_compare(node1, node2):
     i1 = node1[0]
     j1 = node1[1]
@@ -103,6 +144,7 @@ def node_compare(node1, node2):
     else:
         return False
 
+# define a function to determine if a node is already in a list
 def node_in_list(node_state, node_list):
     state_list = []
     for node in node_list:
@@ -187,93 +229,134 @@ goal_state = input2node(goal_input)
 
 # print(node_state_i)
 # print(goal_state)
-node_index_i = 0
-node_parent_index_i = None
+# node_index_i = 0
+node_parent_i = None
 node_cost_i = 0
-node_info_i = (node_cost_i, node_state_i, node_index_i, node_parent_index_i)
+node_info_i = (node_cost_i, node_state_i, node_parent_i)
 
 # nodes_all = [node_info_i]
 nodes_open = [node_info_i]
 nodes_closed = []
 
+nodes_open = sort_cost(nodes_open)
 current_node = nodes_open.pop(0)
 current_cost = current_node[0]
 current_state = current_node[1]
 # print(current_state)
 
-# pop a node, generate child nodes, update lists
+# pop a node, generate child nodes, compare and update lists
 while node_compare(current_state, goal_state) == False:
-    node_parent_index_i = current_node[2]
+    node_parent_i = current_state
     nodes_closed.append(current_state)
-    node_state_i, cost_i = move_up(current_state.copy(), map) # The .copy() here just makes a copy as opposed to a reference and keeps the original alive
+
+    node_state_i, cost_i = move_up(current_state, map) #generate new node, if not in obstacle space (defined in function)
     node_cost_i = current_cost + cost_i
-    if node_in_list(node_state_i, nodes_closed) == False:
-        if node_in_list(node_state_i, nodes_open) == True:
+    if node_in_list(node_state_i, nodes_closed) == False: #check if new node in closed list
+        if node_in_list(node_state_i, nodes_open) == True: #check if new node in open list
             for node in nodes_open:
-                if node_compare(node_state_i, node[1]) == True:
+                if node_compare(node_state_i, node[1]) == True: #compare cost between multiple paths to reach node, update open list if new cost is lower
                     if node_cost_i < node[0]:
                         nodes_open[node[2]][0] = node_cost_i
-                        nodes_open[node[2]][3] = node_parent_index_i
+                        nodes_open[node[2]][2] = node_parent_i
         else:
-            node_index_i = node_index_i+1
-            node_info_i = (node_cost_i, node_state_i, node_index_i, node_parent_index_i)
-            nodes_closed.append(node_info_i)
+            node_info_i = (node_cost_i, node_state_i, node_parent_i) #if new node not in open list already, add to open list
+            nodes_open.append(node_info_i)
             
-    # for node_c in nodes_closed:
-    #     if node_state_i == node_c[1]:
-    #         break
-    #     else:
-    #         for node_o in nodes_open:
-    #             if node_state_i == node_o[1]:
-    #                 if node_cost_i < node_o[0]:
-    #                     nodes_open[node_o[2]][0] = node_cost_i
-    #                     nodes_open[node_o[2]][3] = node_parent_index_i
-    #             else:
+    node_state_i, cost_i = move_up_right(current_state, map) #generate new node, if not in obstacle space (defined in function)
+    node_cost_i = current_cost + cost_i
+    if node_in_list(node_state_i, nodes_closed) == False: #check if new node in closed list
+        if node_in_list(node_state_i, nodes_open) == True: #check if new node in open list
+            for node in nodes_open:
+                if node_compare(node_state_i, node[1]) == True: #compare cost between multiple paths to reach node, update open list if new cost is lower
+                    if node_cost_i < node[0]:
+                        nodes_open[node[2]][0] = node_cost_i
+                        nodes_open[node[2]][2] = node_parent_i
+        else:
+            node_info_i = (node_cost_i, node_state_i, node_parent_i) #if new node not in open list already, add to open list
+            nodes_open.append(node_info_i)
 
+    node_state_i, cost_i = move_right(current_state, map) #generate new node, if not in obstacle space (defined in function)
+    node_cost_i = current_cost + cost_i
+    if node_in_list(node_state_i, nodes_closed) == False: #check if new node in closed list
+        if node_in_list(node_state_i, nodes_open) == True: #check if new node in open list
+            for node in nodes_open:
+                if node_compare(node_state_i, node[1]) == True: #compare cost between multiple paths to reach node, update open list if new cost is lower
+                    if node_cost_i < node[0]:
+                        nodes_open[node[2]][0] = node_cost_i
+                        nodes_open[node[2]][2] = node_parent_i
+        else:
+            node_info_i = (node_cost_i, node_state_i, node_parent_i) #if new node not in open list already, add to open list
+            nodes_open.append(node_info_i)
     
+    node_state_i, cost_i = move_down_right(current_state, map) #generate new node, if not in obstacle space (defined in function)
+    node_cost_i = current_cost + cost_i
+    if node_in_list(node_state_i, nodes_closed) == False: #check if new node in closed list
+        if node_in_list(node_state_i, nodes_open) == True: #check if new node in open list
+            for node in nodes_open:
+                if node_compare(node_state_i, node[1]) == True: #compare cost between multiple paths to reach node, update open list if new cost is lower
+                    if node_cost_i < node[0]:
+                        nodes_open[node[2]][0] = node_cost_i
+                        nodes_open[node[2]][2] = node_parent_i
+        else:
+            node_info_i = (node_cost_i, node_state_i, node_parent_i) #if new node not in open list already, add to open list
+            nodes_open.append(node_info_i)
 
+    node_state_i, cost_i = move_down(current_state, map) #generate new node, if not in obstacle space (defined in function)
+    node_cost_i = current_cost + cost_i
+    if node_in_list(node_state_i, nodes_closed) == False: #check if new node in closed list
+        if node_in_list(node_state_i, nodes_open) == True: #check if new node in open list
+            for node in nodes_open:
+                if node_compare(node_state_i, node[1]) == True: #compare cost between multiple paths to reach node, update open list if new cost is lower
+                    if node_cost_i < node[0]:
+                        nodes_open[node[2]][0] = node_cost_i
+                        nodes_open[node[2]][2] = node_parent_i
+        else:
+            node_info_i = (node_cost_i, node_state_i, node_parent_i) #if new node not in open list already, add to open list
+            nodes_open.append(node_info_i)
 
+    node_state_i, cost_i = move_down_left(current_state, map) #generate new node, if not in obstacle space (defined in function)
+    node_cost_i = current_cost + cost_i
+    if node_in_list(node_state_i, nodes_closed) == False: #check if new node in closed list
+        if node_in_list(node_state_i, nodes_open) == True: #check if new node in open list
+            for node in nodes_open:
+                if node_compare(node_state_i, node[1]) == True: #compare cost between multiple paths to reach node, update open list if new cost is lower
+                    if node_cost_i < node[0]:
+                        nodes_open[node[2]][0] = node_cost_i
+                        nodes_open[node[2]][2] = node_parent_i
+        else:
+            node_info_i = (node_cost_i, node_state_i, node_parent_i) #if new node not in open list already, add to open list
+            nodes_open.append(node_info_i)
 
-    if array_in_list(new_state, states_visited) == False:
-        node_index_i = node_index_i+1
-        node_info_i = [new_state, node_index_i, node_parent_index_i]
-        nodes_test.append(node_info_i)
-        nodes_all.append(node_info_i)
-    if np.array_equal(new_state, goal_state) == True:
-        break
+    node_state_i, cost_i = move_left(current_state, map) #generate new node, if not in obstacle space (defined in function)
+    node_cost_i = current_cost + cost_i
+    if node_in_list(node_state_i, nodes_closed) == False: #check if new node in closed list
+        if node_in_list(node_state_i, nodes_open) == True: #check if new node in open list
+            for node in nodes_open:
+                if node_compare(node_state_i, node[1]) == True: #compare cost between multiple paths to reach node, update open list if new cost is lower
+                    if node_cost_i < node[0]:
+                        nodes_open[node[2]][0] = node_cost_i
+                        nodes_open[node[2]][2] = node_parent_i
+        else:
+            node_info_i = (node_cost_i, node_state_i, node_parent_i) #if new node not in open list already, add to open list
+            nodes_open.append(node_info_i)
 
-    new_state = move_right(current_state.copy(), blank_tile_i)
-    # print(new_state)
-    if array_in_list(new_state, states_visited) == False:
-        node_index_i = node_index_i+1
-        node_info_i = [new_state, node_index_i, node_parent_index_i]
-        nodes_test.append(node_info_i)
-        nodes_all.append(node_info_i)
-    if np.array_equal(new_state, goal_state) == True:
-        break
+    node_state_i, cost_i = move_up_left(current_state, map) #generate new node, if not in obstacle space (defined in function)
+    node_cost_i = current_cost + cost_i
+    if node_in_list(node_state_i, nodes_closed) == False: #check if new node in closed list
+        if node_in_list(node_state_i, nodes_open) == True: #check if new node in open list
+            for node in nodes_open:
+                if node_compare(node_state_i, node[1]) == True: #compare cost between multiple paths to reach node, update open list if new cost is lower
+                    if node_cost_i < node[0]:
+                        nodes_open[node[2]][0] = node_cost_i
+                        nodes_open[node[2]][2] = node_parent_i
+        else:
+            node_info_i = (node_cost_i, node_state_i, node_parent_i) #if new node not in open list already, add to open list
+            nodes_open.append(node_info_i)
 
-    new_state = move_up(current_state.copy(), blank_tile_i)
-    # print(new_state)
-    if array_in_list(new_state, states_visited) == False:
-        node_index_i = node_index_i+1
-        node_info_i = [new_state, node_index_i, node_parent_index_i]
-        nodes_test.append(node_info_i)
-        nodes_all.append(node_info_i)
-    if np.array_equal(new_state, goal_state) == True:
-        break
-
-    new_state = move_down(current_state.copy(), blank_tile_i)
-    # print(new_state)
-    if array_in_list(new_state, states_visited) == False:
-        node_index_i = node_index_i+1
-        node_info_i = [new_state, node_index_i, node_parent_index_i]
-        nodes_test.append(node_info_i)
-        nodes_all.append(node_info_i)
-    if np.array_equal(new_state, goal_state) == True:
-        break
-    
-    current_node = nodes_test.pop(0)
-    current_state = current_node[0]
+    nodes_open = sort_cost(nodes_open)
+    current_node = nodes_open.pop(0)
+    current_cost = current_node[0]
+    current_state = current_node[1]
 
 
 

@@ -1,3 +1,5 @@
+# GitHub Repository: https://github.com/jkim603/enpm661-project2
+
 import numpy as np
 import cv2 as cv
 import time
@@ -352,33 +354,37 @@ print("Complete! Confirm final state:",'('+str(current_state[0]+1)+', '+str(curr
 path = generate_path(nodes_closed)
 # print(path)
 
-print('check 1')
+# print('check 1')
 # visualize map grid search and final path
 img_array = [map_show]
-print('check 1a')
-for node in nodes_closed:
-    print('check 1b')
-    x_coord, y_coord = node[1][0], 249-node[1][1]
-    print('check 1c')
+# print('check 1a')
+# print(len(nodes_closed))
+# for node in nodes_closed:
+for n in range(len(nodes_closed)):
+    # print('check 1b')
+    # x_coord, y_coord = node[1][0], 249-node[1][1]
+    x_coord, y_coord = nodes_closed[n][1][0], 249-nodes_closed[n][1][1]
+    # print('check 1c')
     map_show[y_coord, x_coord] = np.array([220,255,0]) #update color of pixels as they are explored
-    print('check 1d')
+    # print('check 1d')
     img_array.append(map_show.copy())
-    print('check 1e')
-print('check 2')
-for state in path:
-    x_coord, y_coord = state[0], 249-state[1]
+    # print('check 1e')
+# print('check 2')
+# for state in path:
+for s in range(len(path)):
+    x_coord, y_coord = path[s][0], 249-path[s][1]
     map_show[y_coord, x_coord] = np.array([200,0,0]) #update color of optimal path as it is traveled
     img_array.append(map_show.copy())
 
-print('check 3')
+# print('check 3')
 # write to video file
 size = (600,250)
 vid = cv.VideoWriter('proj2_video_julia_kim.mp4', cv.VideoWriter_fourcc(*'mp4v'), 1000, size)
-print('check 4')
+# print('check 4')
 for k in range(len(img_array)):
     img = img_array[k]
     vid.write(img)
-print('check 5')
+# print('check 5')
 vid.release()
 cv.destroyAllWindows()
 

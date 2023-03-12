@@ -1,6 +1,7 @@
 README file for ENPM661 Project 2 for Julia Kim
 
 Code file name: dijkstra_julia_kim.py
+GitHub Repository: https://github.com/jkim603/enpm661-project2
 Dependencies: numpy, cv2, time
 Instructions:
     1. Run the python script called "dijkstra_julia_kim.py"
